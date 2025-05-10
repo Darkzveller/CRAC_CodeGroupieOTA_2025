@@ -5,6 +5,7 @@
 // Parametre FreeRTOS
 #define Te 2.5
 #define Tcan 10
+#define Ti2c 100
 
 // Déclaration des variables externes
 #define frequence 19500

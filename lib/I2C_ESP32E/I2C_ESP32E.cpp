@@ -19,7 +19,7 @@ void init_tof()
 {
 
     Wire.begin(); // Spécifie SDA et SCL pour ESP32
-    Wire.setClock(400000);
+    Wire.setClock(100000);
 
     // fonction pour lancer les tof ! Tout ce dont on a besoin c'est du nombre de tof à init
 
@@ -86,20 +86,19 @@ void read_tof()
         {
             mesure_tof_save[i] = 0;
         }
-        // Serial.printf(" Cpateur %d ", i);
-        // Serial.print(mesure_tof_save[i]); // on print les deux au cas où y ait une merde
+        Serial.printf(" Cpateur %d ", i);
+        Serial.print(mesure_tof_save[i]); // on print les deux au cas où y ait une merde
     }
-    //      400                         200                         150                       200
-    if ((mesure_tof_save[0] > VALUE_DETECTION_OBSTACLE_TOF) && (mesure_tof_save[1] > VALUE_DETECTION_OBSTACLE_TOF))
-    {
-        detect_obstacle = true;
-    }
-    else
+    if ((mesure_tof_save[0] < VALUE_DETECTION_OBSTACLE_TOF) && (mesure_tof_save[1] < VALUE_DETECTION_OBSTACLE_TOF))
     {
         detect_obstacle = false;
     }
-    // Serial.printf(" detect_obstacle %d ", detect_obstacle);
-    // Serial.println();
+    else
+    {
+        detect_obstacle = true;
+    }
+    Serial.printf(" detect_obstacle %d ", detect_obstacle);
+    Serial.println();
 }
 uint8_t scanI2C()
 {
@@ -113,7 +112,7 @@ uint8_t scanI2C()
         {
             Serial.print("I2C device found at address 0x");
             Serial.println(address, HEX);
-            if ((address != MULTIPLEXEUR) && (address != LECTURE_SIMULTANER_SDA1_SDA2) && (address != ID_RGB_LCD_GROOVE) && (address != ID_TXT_LCD_GROOVE))
+            if ((address != MULTIPLEXEUR) && (address != LECTURE_SIMULTANER_SDA1_SDA2) && (address != ID_RGB_LCD_GROOVE) && (address != ID_TXT_LCD_GROOVE)&& (address != 0x62))
             {
                 return address;
             }

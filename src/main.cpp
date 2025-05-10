@@ -10,7 +10,6 @@
 #include "UART1.h"
 #include "USE_FUNCTION.h"
 #include "I2C_ESP32E.h"
-
 void controle(void *parameters)
 {
     TickType_t xLastWakeTime;
@@ -101,6 +100,10 @@ void controle(void *parameters)
                 break;
             }
         }
+        start_stop_moteur_star(stop_start_match_star); // Je savais pas ou aller le foutre
+        // Serial.printf("stop_start_match_star %d", stop_start_match_star);
+        // Serial.println();
+
         if (!stop_start_match_star)
         {
             asservissement_roue_folle_droite_tick(consigne_position_droite, odo_tick_droit);
@@ -226,18 +229,22 @@ void tache_i2c(void *parameters)
     xLastWakeTime = xTaskGetTickCount();
     while (1)
     {
+
         read_tof();
+        delay(10);
+        lcd.clear();
+        delay(10);
         lcd.setCursor(0, 0);
         lcd.printf("x%3.0fy%3.0ft%3.0fS%1dD%1d", odo_x, odo_y, degrees(theta_robot), stop_start_match_star, detect_obstacle);
 
         lcd.setCursor(7, 1);
         lcd.printf("TG%3dD%3d", mesure_tof_save[0], mesure_tof_save[1]);
-        start_stop_moteur_star(stop_start_match_star);
-        // Serial.printf("stop_start_match_star %d", stop_start_match_star);
-        // Serial.println();
+        // static int i = 0;
+        // i++;
+        //       lcdPrint();
 
         flag_controle = 1;
-        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Te));
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Ti2c));
     }
 }
 
@@ -257,11 +264,13 @@ void setup()
     // Initialisation de l'UART1
     setupUART1(1000E3);
     // Initialisation du MUTEX i2c
-    init_mutex(false);
+    init_mutex(true);
     // Initialisation des TOF
     init_tof();
     // Initialisation du LCD
     init_lcd_groove(false);
+    //   lcdInit();
+    //   lcdPrint("test");
 
     Serial.println("on commence");
 
@@ -277,7 +286,7 @@ void setup()
         "controle", // nom de la tache que nous venons de vréer
         10000,      // taille de la pile en octet
         NULL,       // parametre
-        10,         // tres haut niveau de priorite
+        11,         // tres haut niveau de priorite
         NULL        // descripteur
     );
     xTaskCreate(
@@ -285,7 +294,7 @@ void setup()
         "tache_i2c", // nom de la tache que nous venons de vréer
         10000,       // taille de la pile en octet
         NULL,        // parametre
-        11,          // tres haut niveau de priorite
+        9,           // tres haut niveau de priorite
         NULL         // descripteur
     );
     xTaskCreate(
@@ -293,7 +302,7 @@ void setup()
         "comm_avec_bw16", // nom de la tache que nous venons de vréer
         10000,            // taille de la pile en octet
         NULL,             // parametre
-        9,                // tres haut niveau de priorite
+        10,               // tres haut niveau de priorite
         NULL              // descripteur
     );
 }

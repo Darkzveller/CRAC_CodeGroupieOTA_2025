@@ -38,7 +38,7 @@ VL53L0X_Error Vl53l0x::begin(uint8_t address, bool initWire) {
     if (initWire) Wire.begin();
     pMyDevice->I2cDevAddr      = address;
     pMyDevice->comms_type      =  1;
-    pMyDevice->comms_speed_khz =  400;
+    pMyDevice->comms_speed_khz =  100;
 
     _measureStatus = NO_MEASURE;
 
