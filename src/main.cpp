@@ -239,9 +239,7 @@ void tache_i2c(void *parameters)
 
         lcd.setCursor(7, 1);
         lcd.printf("TG%3dD%3d", mesure_tof_save[0], mesure_tof_save[1]);
-        // static int i = 0;
-        // i++;
-        //       lcdPrint();
+
 
         flag_controle = 1;
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Ti2c));
@@ -258,22 +256,26 @@ void setup()
     // setupOTA();
     // Initialisation des moteurs
     setup_motors();
+    Serial.printf("Setup moteur\n");
     stop_motors();
+    Serial.printf("Mise a 0 des moteurs\n");
+
     // Initialisation des encodeurs
     setup_encodeur();
+    Serial.printf("Setup encoder\n");
+
     // Initialisation de l'UART1
-    setupUART1(1000E3);
+    Serial.printf("Setup Uart\n");
+    setupUART1(9600);
     // Initialisation du MUTEX i2c
-    init_mutex(true);
+    init_mutex(false);
     // Initialisation des TOF
     init_tof();
     // Initialisation du LCD
     init_lcd_groove(false);
-    //   lcdInit();
-    //   lcdPrint("test");
+    Serial.printf("lcd_groove\n");
 
     Serial.println("on commence");
-
     // Serial.printf("avncement_gauche enter : %.0f\n", avncement_gauche);
     // Serial.printf("avncement_droite enter : %.0f\n", avncement_droite);
 

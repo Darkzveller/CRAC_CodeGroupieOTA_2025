@@ -86,8 +86,8 @@ void read_tof()
         {
             mesure_tof_save[i] = 0;
         }
-        Serial.printf(" Cpateur %d ", i);
-        Serial.print(mesure_tof_save[i]); // on print les deux au cas où y ait une merde
+        // Serial.printf(" Cpateur %d ", i);
+        // Serial.print(mesure_tof_save[i]); // on print les deux au cas où y ait une merde
     }
     if ((mesure_tof_save[0] < VALUE_DETECTION_OBSTACLE_TOF) && (mesure_tof_save[1] < VALUE_DETECTION_OBSTACLE_TOF))
     {
@@ -97,8 +97,8 @@ void read_tof()
     {
         detect_obstacle = true;
     }
-    Serial.printf(" detect_obstacle %d ", detect_obstacle);
-    Serial.println();
+    // Serial.printf(" detect_obstacle %d ", detect_obstacle);
+    // Serial.println();
 }
 uint8_t scanI2C()
 {
