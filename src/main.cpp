@@ -192,6 +192,7 @@ void comm_avec_bw16(void *parameters)
             liste.general_purpose = TYPE_DEPLACEMENT_RECALAGE;
             liste.direction_recalage = rxMsg.data[0];
             liste.type_modif_x_y_theta_recalge_rien = rxMsg.data[1];
+
             liste.nouvelle_valeur_x_y_theta_rien = fusion_octet(rxMsg.data[2], rxMsg.data[3]);
             liste.consigne_rotation_recalge = convert_angle_deg_to_tick(fusion_octet(rxMsg.data[4], rxMsg.data[5]));
 
@@ -239,7 +240,6 @@ void tache_i2c(void *parameters)
 
         lcd.setCursor(7, 1);
         lcd.printf("TG%3dD%3d", mesure_tof_save[0], mesure_tof_save[1]);
-
 
         flag_controle = 1;
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Ti2c));
@@ -324,6 +324,12 @@ void loop()
 
         // Serial.printf(" er_d %.3f ", convert_distance_tick_to_mm(erreur_distance));
         // Serial.printf(" er_o %.3f ", convert_tick_to_angle_deg(erreur_orient));
+
+        // Serial.printf(" RECALAGE ");
+        // Serial.printf(" liste.direction_recalage %d ", liste.direction_recalage);
+        // Serial.printf(" liste.type_modif_x_y_theta_recalge_rien %d ", liste.type_modif_x_y_theta_recalge_rien);
+        // Serial.printf(" liste.nouvelle_valeur_x_y_theta_rien %f ", liste.nouvelle_valeur_x_y_theta_rien);
+        // Serial.printf(" liste.consigne_rotation_recalge %d ", liste.consigne_rotation_recalge);
 
         // Serial.printf(" consigne_position_droite %.0f ", consigne_position_droite);
         // Serial.printf(" consigne_position_gauche %.0f ", consigne_position_gauche);

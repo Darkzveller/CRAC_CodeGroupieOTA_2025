@@ -82,7 +82,7 @@ void asser_polaire_tick(float coordonnee_x, float coordonnee_y, float theta_cons
     erreur_distance = convert_distance_mm_to_tick(sqrt(pow(coordonnee_x - odo_x, 2) + pow(coordonnee_y - odo_y, 2)));
 
     // Calcul de l'orientation
-    erreur_orient = atan2(coordonnee_x - odo_x, coordonnee_y - odo_y) - theta_robot;
+    erreur_orient = atan2(coordonnee_y - odo_y, coordonnee_x - odo_x) - theta_robot;
     erreur_orient = normaliser_angle_rad(erreur_orient);
 
     // Serial.printf(" er_o_before %.3f ", convert_tick_to_angle_deg(convert_angle_radian_to_tick(erreur_orient)));
@@ -118,7 +118,7 @@ void asser_polaire_tick(float coordonnee_x, float coordonnee_y, float theta_cons
     // Vérification de fin de mouvement
     if (convert_distance_tick_to_mm(erreur_distance) <= 7.5)
     {
-        // Serial.printf(" Vrai ");
+        Serial.printf(" Vrai ");
         consigne_odo_gauche_prec = odo_tick_gauche;
         consigne_odo_droite_prec = odo_tick_droit;
         consigne_odo_x_prec = odo_x;
@@ -133,19 +133,19 @@ void asser_polaire_tick(float coordonnee_x, float coordonnee_y, float theta_cons
     else if ((erreur_orient > convert_angle_deg_to_tick(20)) || (erreur_orient < convert_angle_deg_to_tick(-20))) // Gestion de la consigne de déplacement
 
     {
-        // Serial.printf(" Vrai 2");
+        Serial.printf(" Vrai 2");
         consigne_dist_polaire_tick = 0;
     }
     else
     {
-        // Serial.printf(" Vrai 3");
+        Serial.printf(" Vrai 3");
         consigne_dist_polaire_tick = SPEED_ULTRA;
     }
 
     // Inverser la consigne de distance si besoin
     if (sens == -1)
     {
-        // Serial.printf("dist négatif ");
+        Serial.printf("dist négatif ");
         consigne_dist_polaire_tick = -consigne_dist_polaire_tick;
     }
 
@@ -154,17 +154,17 @@ void asser_polaire_tick(float coordonnee_x, float coordonnee_y, float theta_cons
     consigne_position_droite = odo_tick_droit + coeff_dist_polaire_tick * consigne_dist_polaire_tick - coeff_rot_polaire_tick * consigne_rot_polaire_tick;
 
     // Debug Serial
-    // Serial.printf(" cs_x %.1f ", coordonnee_x);
-    // Serial.printf(" cs_y %.1f ", coordonnee_y);
-    // Serial.printf(" Odo_x %.1f ", odo_x);
-    // Serial.printf(" Odo_y %.1f ", odo_y);
-    // Serial.printf(" theta %.3f ", degrees(theta_robot));
-    // Serial.printf(" er_d %.3f ", convert_distance_tick_to_mm(erreur_distance));
-    // Serial.printf(" er_o %.3f ", convert_tick_to_angle_deg(erreur_orient));
-    // Serial.printf(" consigne_position_droite %.0f ", consigne_position_droite);
-    // Serial.printf(" consigne_position_gauche %.0f ", consigne_position_gauche);
+    Serial.printf(" cs_x %.1f ", coordonnee_x);
+    Serial.printf(" cs_y %.1f ", coordonnee_y);
+    Serial.printf(" Odo_x %.1f ", odo_x);
+    Serial.printf(" Odo_y %.1f ", odo_y);
+    Serial.printf(" theta %.3f ", degrees(theta_robot));
+    Serial.printf(" er_d %.3f ", convert_distance_tick_to_mm(erreur_distance));
+    Serial.printf(" er_o %.3f ", convert_tick_to_angle_deg(erreur_orient));
+    Serial.printf(" consigne_position_droite %.0f ", consigne_position_droite);
+    Serial.printf(" consigne_position_gauche %.0f ", consigne_position_gauche);
 
-    // Serial.println();
+    Serial.println();
 }
 
 bool recalage(uint8_t direction, uint8_t type_modif, uint16_t nouvelle_valeur, uint16_t consigne_rotation)
@@ -229,7 +229,7 @@ bool recalage(uint8_t direction, uint8_t type_modif, uint16_t nouvelle_valeur, u
     }
     if (type_modif == MODIF_THETA)
     {
-        theta_robot = radians(convert_angle_deg_to_tick(nouvelle_valeur));
+        theta_robot = radians((nouvelle_valeur));
         consigne_theta_prec = convert_angle_deg_to_tick(nouvelle_valeur);
     }
 
