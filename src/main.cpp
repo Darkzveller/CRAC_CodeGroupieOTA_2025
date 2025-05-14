@@ -60,7 +60,7 @@ void controle(void *parameters)
                 break;
             case TYPE_DEPLACEMENT_X_Y_POLAIRE:
                 // Serial.printf(" TYPE_DEPLACEMENT_X_Y_POLAIRE ");
-                asser_polaire_tick(liste.x_polaire, liste.y_polaire, 0, liste.nbr_passage = true);
+            asser_polaire_tick(liste.x_polaire[liste.compteur_point_de_passage_polaire], liste.y_polaire[liste.compteur_point_de_passage_polaire], 0, liste.deceleration_polaire);
 
                 if (flag_fin_mvt)
                 {
@@ -133,6 +133,8 @@ void comm_avec_bw16(void *parameters)
             break;
 
         case ROTATION:
+            enregistreur_odo();
+
             // Pour se simplifier j'ai préférer décomposer les etapes quitte a prendre un peu plus de temps cpu
 
             liste.general_purpose = TYPE_DEPLACEMENT_ROTATION;
@@ -152,6 +154,7 @@ void comm_avec_bw16(void *parameters)
             break;
 
         case LIGNE_DROITE:
+            enregistreur_odo();
 
             liste.general_purpose = TYPE_DEPLACEMENT_LIGNE_DROITE;
             liste.distance = convert_distance_mm_to_tick(fusion_octet(rxMsg.data[0], rxMsg.data[1]));
@@ -171,23 +174,65 @@ void comm_avec_bw16(void *parameters)
             break;
 
         case POLAIRE:
+            /*enregistreur_odo();
 
-            liste.general_purpose = TYPE_DEPLACEMENT_X_Y_POLAIRE;
-            liste.x_polaire = fusion_octet(rxMsg.data[0], rxMsg.data[1]);
-            liste.y_polaire = fusion_octet(rxMsg.data[2], rxMsg.data[3]);
-            liste.nbr_passage = rxMsg.data[4];
-            flag_fin_mvt = false;
+                        liste.general_purpose = TYPE_DEPLACEMENT_X_Y_POLAIRE;
+                        liste.x_polaire = fusion_octet(rxMsg.data[0], rxMsg.data[1]);
+                        liste.y_polaire = fusion_octet(rxMsg.data[2], rxMsg.data[3]);
+                        liste.nbr_passage = rxMsg.data[4];
+                        flag_fin_mvt = false;
 
-            rxMsg.id = 0;
+                        rxMsg.id = 0;
+
+                        Serial.printf(" POLAIRE ");
+                        Serial.printf(" liste.x_polaire %f ", liste.x_polaire);
+                        Serial.printf(" liste.y_polaire %f ", liste.y_polaire);
+
+                        Serial.println();
+            */
+
+            enregistreur_odo();
+
+            liste.nbr_passage = rxMsg.data[0];
+            /*On vide la liste*/
+            if ((liste.nbr_passage == 0))
+            {
+                memset(liste.x_polaire, 0, sizeof(liste.x_polaire));
+                memset(liste.y_polaire, 0, sizeof(liste.y_polaire));
+                liste.souvenir_nbr_passage_zero == false;
+            }
+            liste.x_polaire[liste.nbr_passage] = fusion_octet(rxMsg.data[1], rxMsg.data[2]);
+            liste.y_polaire[liste.nbr_passage] = fusion_octet(rxMsg.data[3], rxMsg.data[4]);
+
+            liste.checksum_nbr_passage = rxMsg.data[5] - 1;
+
+            if (liste.checksum_nbr_passage == liste.nbr_passage)
+            {
+                // Serial.printf("CAOPFJAPFOJAPOEFJPCNAPEFIJAPNEVAPFOJCJCAOPFJAPFOJAPOEFJPCNAPEFIJAPNEVAPFOJCJCAOPFJAPFOJAPOEFJPCNAPEFIJAPNEVAPFOJCJCAOPFJAPFOJAPOEFJPCNAPEFIJAPNEVAPFOJCJCAOPFJAPFOJAPOEFJPCNAPEFIJAPNEVAPFOJCJ");
+                liste.general_purpose = TYPE_DEPLACEMENT_X_Y_POLAIRE;
+                flag_fin_mvt = false;
+                rxMsg.id = 0;
+                liste.compteur_point_de_passage_polaire = 0;
+            }
 
             Serial.printf(" POLAIRE ");
-            Serial.printf(" liste.x_polaire %f ", liste.x_polaire);
-            Serial.printf(" liste.y_polaire %f ", liste.y_polaire);
+            Serial.printf(" liste.nbr_passage %d ", liste.nbr_passage);
+            Serial.printf(" liste.checksum_nbr_passage %d ", liste.checksum_nbr_passage);
+
+            Serial.printf(" liste.x_polaire %f ", liste.x_polaire[liste.nbr_passage]);
+            Serial.printf(" liste.y_polaire %f ", liste.y_polaire[liste.nbr_passage]);
+
+            // Serial.printf(" rxMsg.data[1] %d ", rxMsg.data[1]);
+            // Serial.printf(" rxMsg.data[2] %d ", rxMsg.data[2]);
+            // Serial.printf(" rxMsg.data[3] %d ", rxMsg.data[3]);
+            // Serial.printf(" rxMsg.data[4] %d ", rxMsg.data[4]);
 
             Serial.println();
 
             break;
+            break;
         case RECALAGE:
+            enregistreur_odo();
 
             liste.general_purpose = TYPE_DEPLACEMENT_RECALAGE;
             liste.direction_recalage = rxMsg.data[0];
@@ -200,7 +245,7 @@ void comm_avec_bw16(void *parameters)
             Serial.printf(" RECALAGE ");
             Serial.printf(" liste.direction_recalage %d ", liste.direction_recalage);
             Serial.printf(" liste.type_modif_x_y_theta_recalge_rien %d ", liste.type_modif_x_y_theta_recalge_rien);
-            Serial.printf(" liste.nouvelle_valeur_x_y_theta_rien %d ", liste.nouvelle_valeur_x_y_theta_rien);
+            Serial.printf(" liste.nouvelle_valeur_x_y_theta_rien %f ", liste.nouvelle_valeur_x_y_theta_rien);
             Serial.printf(" liste.consigne_rotation_recalge %d ", liste.consigne_rotation_recalge);
 
             Serial.println();

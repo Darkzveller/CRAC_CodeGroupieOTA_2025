@@ -90,14 +90,16 @@ struct Ordre_deplacement
   float nouvelle_valeur_x_y_theta_rien;
   uint16_t consigne_rotation_recalge;
   float x;
-  float y;
-  float theta;
+  bool deceleration_polaire;
+  uint8_t compteur_point_de_passage_polaire;
   float vitesse_x_y_theta;
-  float x_polaire;
-  float y_polaire;
-  bool nbr_passage;
-};
+  float x_polaire[255];
+  float y_polaire[255];
+  uint8_t nbr_passage;
+  uint8_t checksum_nbr_passage;
+  bool souvenir_nbr_passage_zero;
 
+};
 // Déclaration de la variable globale (définie dans `variable.cpp`)
 extern Ordre_deplacement liste;
 

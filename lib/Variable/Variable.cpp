@@ -39,7 +39,7 @@ double consigne_odo_y_prec = 0;
 //************Liste Ordre Deplacement */
 
 Ordre_deplacement liste = {
-    TYPE_DEPLACEMENT_IMMOBILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    TYPE_DEPLACEMENT_IMMOBILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0
 };
 
 // Variable asservissement
@@ -196,7 +196,7 @@ float consigne_rot_polaire_tick = 0;
 float consigne_dist_polaire_tick = SPEED_ULTRA;
 
 float coeff_decc_distance_polaire_tick = 35;
-float distance_decl_polaire_tick = 0;
+float distance_decl_polaire_tick = 20;
 
 bool calcul_decl_polaire_tick = false;
 
