@@ -69,7 +69,7 @@ void controle(void *parameters)
                 }
                 break;
             case TYPE_DEPLACEMENT_RECALAGE:
-                // Serial.printf(" TYPE_DEPLACEMENT_RECALAGE ");
+                Serial.printf(" TYPE_DEPLACEMENT_RECALAGE ");
 
                 if (recalage(liste.direction_recalage, liste.type_modif_x_y_theta_recalge_rien, liste.nouvelle_valeur_x_y_theta_rien, liste.consigne_rotation_recalge))
                 {
@@ -359,9 +359,9 @@ void loop()
 {
     if (flag_controle)
     {
-        // Serial.printf(" Odo x %.3f ", odo_x);
-        // Serial.printf(" odo_y %.3f ", odo_y);
-        // Serial.printf(" teheta %.3f ", degrees(theta_robot));
+        Serial.printf(" Odo x %.3f ", odo_x);
+        Serial.printf(" odo_y %.3f ", odo_y);
+        Serial.printf(" teheta %.3f ", degrees(theta_robot));
         // Serial.printf(" direction_recalage %d ", liste.direction_recalage);
         // Serial.printf(" type_modif_x_y_theta_recalge_rien %d ", liste.type_modif_x_y_theta_recalge_rien);
         // Serial.printf(" nouvelle_valeur_x_y_theta_rien %d ", liste.nouvelle_valeur_x_y_theta_rien);
@@ -393,7 +393,7 @@ void loop()
         // Serial.printf(" etat_x_y_theta x %d ", etat_x_y_theta);
         // Serial.print("Etat actuel : " + toStringG(etat_actuel_vit_roue_folle_gauche));
         // Serial.print(" " + toStringD(etat_actuel_vit_roue_folle_droite));
-        // Serial.println();
+        Serial.println();
         flag_controle = 0;
     }
 }

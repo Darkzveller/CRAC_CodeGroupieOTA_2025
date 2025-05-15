@@ -247,6 +247,7 @@ bool recalage(uint8_t direction, uint8_t type_modif, float nouvelle_valeur, uint
     {
         theta_robot = radians((nouvelle_valeur));
         consigne_theta_prec = convert_angle_deg_to_tick(nouvelle_valeur);
+        flag_modif_fait = true;
     }
 
     // Rotation demandée ?
