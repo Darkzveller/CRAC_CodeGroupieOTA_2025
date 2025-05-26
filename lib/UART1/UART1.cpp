@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include "UART1.h"
 #include "Variable.h"
-void setupUART1(int baudrate)
-{
+
 #define RXD2 16 // GPIO16 = RX
 #define TXD2 17 // GPIO17 = TX
 
+void setupUART1(int baudrate)
+{
     Serial2.begin(baudrate);
     // Serial2.begin(baudrate, SERIAL_8N1, RXD2, TXD2); // RX, TX
 }

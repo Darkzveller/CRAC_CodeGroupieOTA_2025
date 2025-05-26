@@ -24,13 +24,13 @@
 
 #define channel_2 1
 // Encodeur + Parametre physique du robot
-#define ENTRAXE 40.0
-#define LARGEUR_ROBOT_mm 80.0
+#define ENTRAXE 84.0
+#define LARGEUR_ROBOT_mm 110.0
 #define TIC_PER_TOUR 1024.0
 #define RESOLUTION_ROUE_CODEUSE 10.0
 #define COEFF_ROUE_DROITE 1.0
 #define COEFF_ROUE_GAUCHE 1.0
-#define SIZE_WHEEL_DIAMETER_mm 43.0
+#define SIZE_WHEEL_DIAMETER_mm 44.0
 extern float perimetre_robot;
 
 extern double theta_robot_prec;
@@ -227,6 +227,14 @@ extern double theta_deuxieme_rotation;
 extern float consigne_regulation_moyenne;
 
 //************************Polaire en tick */
+#define TOLERANCE_ERREUR_DISTANCE_AUTORISER 5
+#define SEUIL_ACTIVATION_DECELERATION_DISTANCE 85
+
+#define VALEUR_DEFAUT_COEFF_ROT_POLAIRE_TICK 0.5
+#define VALEUR_DEFAUT_COEFF_DIST_POLAIRE_TICK 1
+#define VALEUR_ROTATION_SUR_PLACE_COEFF_ROT_POLAIRE_TICK 1.2
+#define VALEUR_ROTATION_SUR_PLACE_COEFF_DIST_POLAIRE_TICK 0
+
 extern float erreur_distance;
 extern float erreur_orient;
 extern float consigne_dist_polaire_tick_max;
