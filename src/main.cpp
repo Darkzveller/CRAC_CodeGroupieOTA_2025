@@ -10,29 +10,95 @@
 #include "UART1.h"
 #include "USE_FUNCTION.h"
 #include "I2C_ESP32E.h"
+int pp = 0;
+int mouvement = 0;
+int flag_mouvement;
 void controle(void *parameters)
 {
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount();
     while (1)
     {
-        read_x_y_theta();
 
+        read_x_y_theta();
+        if (pp == 0)
+        {
+            liste.general_purpose = TYPE_DEPLACEMENT_LIGNE_DROITE;
+            liste.distance = 200;
+            liste.vitesse_croisiere = SPEED_NORMAL;
+            lauch_flag_asser_roue(true);
+            pp = 1;
+        }
         if (detect_obstacle)
         {
+            // Serial.printf("%d\n", liste.general_purpose);
+            // switch (mouvement)
+            // {
+            // case 0:
+            //     if (flag_mouvement == 0)
+            //     {
+            //         liste.general_purpose = TYPE_DEPLACEMENT_IMMOBILE;
+            //         flag_mouvement = 1;
+            //     }
+            //     break;
+            // case 1:
+            //     if (flag_mouvement == 0)
+            //     {
+            //         liste.general_purpose = TYPE_DEPLACEMENT_ROTATION;
+            //         liste.angle = 45;
+            //         liste.vitesse_croisiere = SPEED_TORTUE;
+            //         lauch_flag_asser_roue(true);
+            //         flag_mouvement = 1;
+            //     }
+            //     break;
+            // case 2:
+            //     if (flag_mouvement == 0)
+            //     {
+            //         liste.general_purpose = TYPE_DEPLACEMENT_LIGNE_DROITE;
+            //         liste.vitesse_croisiere = SPEED_NORMAL;
+            //         liste.distance = 50;
+            //         lauch_flag_asser_roue(true);
+            //         flag_mouvement = 1;
+            //     }
+            //     break;
+            // case 3:
+            //     if (flag_mouvement == 0)
+            //     {
+            //         liste.general_purpose = TYPE_DEPLACEMENT_ROTATION;
+            //         liste.angle = -45;
+            //         liste.vitesse_croisiere = SPEED_TORTUE;
+            //         lauch_flag_asser_roue(true);
+            //         flag_mouvement = 1;
+            //     }
+            // case 4:
+            //     liste.general_purpose = TYPE_DEPLACEMENT_IMMOBILE;
+            //     break;
+            //     break;
 
+            // default:
+            //     break;
+            // }
             switch (liste.general_purpose)
             {
             case TYPE_DEPLACEMENT_LIGNE_DROITE:
-                // Serial.printf("TYPE_DEPLACEMENT_LIGNE_DROITE ");
+                Serial.printf("TYPE_DEPLACEMENT_LIGNE_DROITE ");
 
                 ligne_droite(liste.distance, liste.vitesse_croisiere);
-                // Serial.println();
+                // Serial.printf(" consigne_position_droite %.0f ", consigne_position_droite);
+                // Serial.printf(" consigne_position_gauche %.0f ", consigne_position_gauche);
+
+                // Serial.printf(" odo_tick_droit %.0f ", odo_tick_droit);
+                // Serial.printf(" odo_tick_gauche %.0f ", odo_tick_gauche);
+
+                Serial.println();
 
                 if (return_flag_asser_roue())
                 {
                     send_message_bw16(ACKNOWLEDGE_BASE_ROULANTE, TYPE_DEPLACEMENT_LIGNE_DROITE, 0, 0, 0, 0, 0, 0, 0);
                     liste.general_purpose = TYPE_DEPLACEMENT_IMMOBILE;
+                    // prépare le prochain mouvement
+                    mouvement++;
+                    flag_mouvement = 1;
                 }
 
                 break;
@@ -48,6 +114,9 @@ void controle(void *parameters)
                     consigne_theta_prec = degrees(theta_robot);
                     send_message_bw16(ACKNOWLEDGE_BASE_ROULANTE, TYPE_DEPLACEMENT_ROTATION, 0, 0, 0, 0, 0, 0, 0);
                     liste.general_purpose = TYPE_DEPLACEMENT_IMMOBILE;
+                    // prépare le prochain mouvement
+                    mouvement++;
+                    flag_mouvement = 1;
                 }
                 break;
             case TYPE_DEPLACEMENT_IMMOBILE:
@@ -60,7 +129,7 @@ void controle(void *parameters)
                 break;
             case TYPE_DEPLACEMENT_X_Y_POLAIRE:
                 // Serial.printf(" TYPE_DEPLACEMENT_X_Y_POLAIRE ");
-            asser_polaire_tick(liste.x_polaire[liste.compteur_point_de_passage_polaire], liste.y_polaire[liste.compteur_point_de_passage_polaire], 0, liste.deceleration_polaire);
+                asser_polaire_tick(liste.x_polaire[liste.compteur_point_de_passage_polaire], liste.y_polaire[liste.compteur_point_de_passage_polaire], 0, liste.deceleration_polaire);
 
                 if (flag_fin_mvt)
                 {
@@ -100,7 +169,7 @@ void controle(void *parameters)
                 break;
             }
         }
-        start_stop_moteur_star(stop_start_match_star); // Je savais pas ou aller le foutre
+        // start_stop_moteur_star(stop_start_match_star); // Je savais pas ou aller le foutre
         // Serial.printf("stop_start_match_star %d", stop_start_match_star);
         // Serial.println();
 
@@ -109,6 +178,7 @@ void controle(void *parameters)
             asservissement_roue_folle_droite_tick(consigne_position_droite, odo_tick_droit);
             asservissement_roue_folle_gauche_tick(consigne_position_gauche, odo_tick_gauche);
         }
+
         flag_controle = 1;
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Te));
     }
@@ -283,8 +353,8 @@ void tache_i2c(void *parameters)
         lcd.setCursor(0, 0);
         lcd.printf("x%3.0fy%3.0ft%3.0fS%1dD%1d", odo_x, odo_y, degrees(theta_robot), stop_start_match_star, detect_obstacle);
 
-        lcd.setCursor(7, 1);
-        lcd.printf("TG%3dD%3d", mesure_tof_save[0], mesure_tof_save[1]);
+        lcd.setCursor(0, 1);
+        lcd.printf("TG%3dD%3dO:%1d", mesure_tof_save[0], mesure_tof_save[1], detect_obstacle);
 
         flag_controle = 1;
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Ti2c));

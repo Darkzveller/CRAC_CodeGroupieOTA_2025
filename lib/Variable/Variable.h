@@ -24,13 +24,22 @@
 
 #define channel_2 1
 // Encodeur + Parametre physique du robot
-#define ENTRAXE 84.0
-#define LARGEUR_ROBOT_mm 110.0
+// #define ENTRAXE 84.0
+// #define LARGEUR_ROBOT_mm 110.0
+// #define TIC_PER_TOUR 1024.0
+// #define RESOLUTION_ROUE_CODEUSE 10.0
+// #define COEFF_ROUE_DROITE 1.0
+// #define COEFF_ROUE_GAUCHE 1.0
+//  #define SIZE_WHEEL_DIAMETER_mm 44.0
+
+#define ENTRAXE 40.0
+#define LARGEUR_ROBOT_mm 80.0
 #define TIC_PER_TOUR 1024.0
 #define RESOLUTION_ROUE_CODEUSE 10.0
 #define COEFF_ROUE_DROITE 1.0
 #define COEFF_ROUE_GAUCHE 1.0
-#define SIZE_WHEEL_DIAMETER_mm 44.0
+#define SIZE_WHEEL_DIAMETER_mm 43.0
+
 extern float perimetre_robot;
 
 extern double theta_robot_prec;
